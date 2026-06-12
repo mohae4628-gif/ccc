@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Wedding Invitation</title>
+    <title>دعوة </title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* ألوان الفيديو المستوحاة من الظرف (شوكولاتة داكنة، ذهبي) */
-            --dark-chocolate: #361608;
-            --gold-accent: #d4af37;
-            --text-on-dark: #eee;
-            --envelope-body: #4a210d; /* لون جسم الظرف */
+            --bg-color: #f4efe6; /* اللون الكريمي الدافئ لـ Pressed Love */
+            --card-bg: #ffffff; 
+            --primary-color: #231f1e; /* أسود مطفي فاخر للحروف */
+            --accent-color: #5a4e3d; /* ذهبي هادئ للإطارات */
+            --seal-color: #8a1c24; 
         }
 
         * {
@@ -23,598 +23,587 @@
         }
 
         body {
-            background-color: #f0f0f0; 
+            background-color: var(--bg-color);
+            font-family: 'Cormorant Garamond', 'Aref Ruqaa', serif;
+            color: var(--primary-color);
             display: flex;
             justify-content: center;
-            overflow-x: hidden;
-            font-family: 'Cormorant Garamond', serif; /* الخط الانسيابي الجديد */
-        }
-
-        .invitation-container {
-            width: 100%;
-            max-width: 480px; 
+            align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
             position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3);
-            overflow: hidden;
-            background-color: #fff;
+            padding-bottom: 60px;
         }
 
-        /* --- 1. شاشة الظرف الثلاثية الأبعاد الواقعية (3D Envelope) --- */
+        /* زينة القلوب العائمة */
+        .confetti {
+            position: fixed;
+            top: -20px;
+            z-index: 99;
+            font-size: 18px;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        /* أنيميشن الظهور الذكي مع السكرول */
+        .animate-fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        /* الكلاس الذي يتم إضافته برمجياً عند التمرير */
+        .animate-fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        /* --- 1. شاشة الظرف الخارجي --- */
         #splash-screen {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #fcf9f5; 
+            background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); /* ينزلق خارج الشاشة */
-            perspective: 1000px; /* ضروري لتأثير الـ 3D */
+            transition: opacity 1s ease 0.8s, transform 1s ease 0.8s;
+            perspective: 1000px;
         }
 
-        /* حاوية الظرف الرئيسية لضبط المنظور */
-        .envelope-wrapper {
+        .envelope {
             position: relative;
-            width: 300px;
-            height: 220px;
-            transform-style: preserve-3d;
+            width: 300px; height: 200px;
+            background-color: #dcbfa1;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-        .envelope-wrapper:hover {
-            transform: rotateX(5deg) scale(1.02); /* تأثير إمالة خفيف عند التمرير */
-        }
+        .envelope:hover { transform: scale(1.02); }
 
-        /* غطاء الظرف العلوي (يفتح بروتينX 180 درجة) */
         .envelope-flap {
             position: absolute;
             top: 0; left: 0; width: 0; height: 0;
             border-left: 150px solid transparent;
             border-right: 150px solid transparent;
-            border-top: 110px solid var(--dark-chocolate);
+            border-top: 110px solid #c9a987;
             transform-origin: top;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 4; /* على قمة الغطاء الجانبي */
-            backface-visibility: hidden; /* ضروري لعدم ظهور الظهر عند الفتح */
+            z-index: 4;
         }
 
-        /* جسم الظرف (الجوانب والأسفل) */
-        .envelope-body {
+        .envelope-front {
             position: absolute;
             bottom: 0; left: 0; width: 0; height: 0;
-            border-left: 150px solid rgba(74, 33, 13, 1);
-            border-right: 150px solid rgba(74, 33, 13, 1);
-            border-bottom: 110px solid #5d2b12; /* أفتح قليلاً لإضافة عمق */
-            z-index: 2; /* خلف غطاء الظرف الجانبي والأمامي */
-            border-radius: 0 0 8px 8px;
-        }
-        /* غطاء جانبي أمامي لتغطية الحواف */
-        .envelope-front-cover {
-             position: absolute;
-             bottom:0; left:0; width: 100%; height: 110px;
-             background-color: var(--envelope-body);
-             z-index: 3;
-             border-radius: 0 0 8px 8px;
-             backface-visibility: hidden;
+            border-left: 150px solid #e9cca8;
+            border-right: 150px solid #e9cca8;
+            border-bottom: 100px solid #edd3b2;
+            z-index: 3;
+            border-radius: 0 0 5px 5px;
         }
 
-        /* الختم الشمعي ثلاثي الأبعاد المطور (A&F -> M&N) */
         .wax-seal {
             position: absolute;
-            top: 90px;
-            left: 50%;
+            top: 90px; left: 50%;
             transform: translateX(-50%);
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, #d4af37, #a67c52);
+            width: 55px; height: 55px;
+            background-color: var(--seal-color);
             border-radius: 50%;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.15);
             z-index: 5;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            font-size: 1.6rem;
-            font-family: 'Alex Brush', cursive;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5);
-            transition: opacity 0.5s ease 0.4s, transform 0.5s ease;
+            transition: opacity 0.4s ease 0.2s;
         }
+        .wax-seal::after { content: '❤'; color: #f5c2c6; font-size: 20px; }
 
-        /* حالات فتح الـ 3D (الجديدة) */
-        .splash-open .envelope-flap {
-            transform: rotateX(180deg);
-            z-index: 1; /* ينزل خلف المحتوى */
-        }
-        .splash-open .wax-seal {
-            opacity: 0;
-            transform: translateX(-50%) translateY(20px) scale(0.8); /* يختفي لأسفل */
-        }
+        .open-envelope .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .open-envelope .wax-seal { opacity: 0; }
 
-        .splash-text {
-            margin-top: 40px;
+        .seal-instruction {
+            margin-top: 30px;
             font-size: 1.1rem;
-            letter-spacing: 4px;
-            color: var(--dark-chocolate);
-            animation: pulse 2s infinite;
-            font-weight: 600;
+            color: var(--primary-color);
             text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 300;
+            animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.02); }
+            50% { opacity: 1; transform: scale(1.01); }
         }
 
-        /* --- 2. المحتوى الرئيسي بالخلفية الموحدة الجديدة --- */
+        /* --- 2. محتوى الدعوة الرئيسي --- */
         #main-content {
+            width: 100%;
+            max-width: 450px;
+            min-height: 100vh;
+            background-color: var(--bg-color);
             display: none;
             opacity: 0;
-            transition: opacity 2s ease;
-            width: 100%;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-            /* [التعديل 1]: صورتك الجديدة كخلفية ثابتة */
-            background-image: url('https://res.cloudinary.com/dyvadd9tt/image/upload/v1781217957/WhatsApp_Image_2026-06-11_at_3.18.20_PM_diuczq.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        
-        /* تظليل خفيف فوق الخلفية ليظهر الكلام بوضوح (Overlay) */
-        #main-content::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.65);
-            z-index: -1;
+            transition: opacity 1.5s ease;
+            text-align: center;
+            padding-bottom: 100px;
         }
 
-        /* --- حركات الدخول من اليمين واليسار --- */
-        .slide-left {
-            opacity: 0;
-            transform: translateX(-70px);
-            transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .slide-right {
-            opacity: 0;
-            transform: translateX(70px);
-            transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .animate-active {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* زر تشغيل الموسيقى */
-        .music-toggle {
+        .audio-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: 30px; left: 20px;
+            background: white;
+            border: 1px solid var(--accent-color);
             width: 40px; height: 40px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--dark-chocolate);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            z-index: 10;
-            color: var(--dark-chocolate);
-            font-size: 1.2rem;
-            backdrop-filter: blur(5px);
+            z-index: 90;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
-        /* قسم الهيرو (العناوين) */
-        .hero-section {
-            text-align: center;
-            padding: 80px 20px 40px 20px;
-            color: var(--dark-chocolate);
+        /* غلاف الفيديو الاحترافي الكامل في البداية (Hero Video Cover) */
+        .hero-video-cover {
+            width: 100%;
+            height: 85vh;
             overflow: hidden;
+            position: relative;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #e1d9c4;
+        }
+        .hero-video-cover video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        .video-overlay-text {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+        .hero-overlay-gradient {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, var(--bg-color) 98%);
         }
 
-        .script-font {
-            font-family: 'Alex Brush', cursive;
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            color: var(--dark-chocolate);
+        /* طابع مونوغرام Teatro المميز بالحروف المتباعدة العريضة */
+        .monogram {
+            font-size: 3.2rem;
+            color: var(--primary-color);
+            font-weight: 300;
+            margin-bottom: 5px;
+            letter-spacing: 8px; 
+            text-transform: uppercase;
         }
 
         .couple-names {
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            line-height: 1.2;
-            margin: 20px 0;
-            text-transform: uppercase;
-        }
-        .and-script {
-            font-family: 'Alex Brush', cursive;
-            font-size: 2.5rem;
-            text-transform: lowercase;
-            margin: 0 10px;
-            color: var(--gold-accent);
-        }
-
-        .rings-separator {
-            font-size: 2.5rem;
-            margin: 30px 0;
-        }
-
-        .save-the-date {
-            font-size: 1.1rem;
-            letter-spacing: 5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .date-time {
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            line-height: 1.6;
-        }
-
-        /* قسم العداد التنازلي البني الداكن (يغطي الخلفية) */
-        .countdown-section {
-            background-color: var(--dark-chocolate);
-            color: var(--gold-accent);
-            text-align: center;
-            padding: 50px 20px;
-            position: relative;
-            z-index: 2;
-        }
-        .countdown-title {
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
+            font-size: 2.6rem;
             font-weight: 400;
+            margin: 10px 0;
+            color: var(--primary-color);
+            letter-spacing: 2px;
         }
-        .timer-display {
+
+        /* --- 3. قسم العداد التنازلي الفاخر المنسوخ من Teatro 2 --- */
+        .countdown-section {
+            margin: 45px 20px;
+            text-align: center;
+        }
+
+        .countdown-subtitle {
+            font-size: 1.4rem;
+            color: #615751;
+            font-style: italic;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .countdown-row {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            font-size: 2.5rem;
-            font-weight: 700;
+            align-items: center;
+            gap: 15px;
+            direction: ltr;
         }
-        .time-unit {
+
+        .time-block {
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .unit-label {
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 5px;
-            color: var(--text-on-dark);
-            font-family: sans-serif;
+            min-width: 55px;
         }
 
-        /* قسم الموقع (شفاف لتظهر الخلفية) */
-        .location-section {
-            padding: 60px 20px;
-            text-align: center;
-            color: var(--dark-chocolate);
-            overflow: hidden;
-        }
-        .section-header {
-            font-size: 1.6rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        .venue-name {
-            font-size: 2.4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .direction-link {
-            display: inline-block;
-            margin: 20px 0;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            color: var(--dark-chocolate);
-            text-decoration: underline;
-            text-underline-offset: 5px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        /* قسم RSVP التفاعلي (زجاجي) */
-        .rsvp-section {
-            padding: 50px 20px;
-            text-align: center;
-            overflow: hidden;
-        }
-        .rsvp-container {
-            /* تأثير زجاجي ليظهر ما خلفه بشكل ضبابي جميل */
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            padding: 40px 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .rsvp-header {
-            color: var(--dark-chocolate);
+        .time-number {
             font-size: 2.5rem;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        .rsvp-deadline {
-            color: var(--dark-chocolate);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 25px;
-        }
-        .input-block {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        .input-label {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--dark-chocolate);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-        .text-input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-family: inherit;
-            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--primary-color);
+            line-height: 1;
         }
 
-        .rsvp-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .rsvp-option-label {
-            position: relative;
-            display: block;
-            padding: 12px;
-            border: 1px solid var(--dark-chocolate);
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 1rem;
-            background-color: rgba(255,255,255,0.7);
-            color: var(--dark-chocolate);
-            font-weight: 600;
-            transition: all 0.3s;
-            z-index: 1;
-            overflow: hidden;
-        }
-        .rsvp-radio-input { display: none; }
-        .rsvp-radio-input:checked + .rsvp-option-label {
-            color: white;
-            border-color: var(--dark-chocolate);
-        }
-        .rsvp-option-label::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; height: 100%; width: 0;
-            background-color: var(--dark-chocolate);
-            z-index: -1;
-            transition: width 0.4s ease-out;
-        }
-        .rsvp-radio-input:checked + .rsvp-option-label::before { width: 100%; }
-
-        .submit-rsvp-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--dark-chocolate);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            font-family: inherit;
-            margin-top: 10px;
-        }
-
-        /* الفوتر الداكن */
-        .invitation-footer {
-            background-color: var(--dark-chocolate);
-            color: var(--gold-accent);
-            text-align: center;
-            padding: 60px 20px;
-            position: relative;
-            z-index: 2;
-        }
-        .footer-names {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        .footer-date {
-            font-size: 1.4rem;
+        .time-text {
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
             letter-spacing: 3px;
-            margin: 20px 0;
+            margin-top: 8px;
+            font-weight: 400;
         }
+
+        .timer-dot {
+            color: var(--accent-color);
+            font-size: 0.7rem;
+            margin-bottom: 18px;
+        }
+
+        .floating-heart-inline {
+            display: inline-block;
+            color: #fca5a5;
+            font-size: 1.1rem;
+            position: absolute;
+            animation: floatUpDown 3.5s ease-in-out infinite;
+        }
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* --- 4. تصميم قسم "صور وكلام كتير" (Editorial Story Blocks) --- */
+        .story-section {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .story-block {
+            margin-bottom: 45px;
+            background: var(--card-bg);
+            border: 1px solid #e1d9c4;
+            padding: 15px;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 1px solid var(--accent-color);
+        }
+
+        .story-title {
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .story-text {
+            font-size: 1.05rem;
+            color: #5c524b;
+            line-height: 1.7;
+            font-weight: 300;
+            padding: 0 10px;
+            font-family: 'Cormorant Garamond', 'Aref Ruqaa', serif;
+        }
+
+        /* --- 5. العناوين والكروت المزدوجة النحيفة خطياً --- */
+        .section-header {
+            font-size: 1.5rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin: 50px 0 10px 0;
+            font-weight: 300;
+        }
+
+        .decorative-divider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+        .decorative-divider .line {
+            width: 50px; height: 1px;
+            background-color: var(--accent-color);
+        }
+        .decorative-divider .diamond {
+            font-size: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .luxury-card {
+            background-color: transparent;
+            border: 1px solid #e1d9c4; 
+            padding: 6px;
+            margin: 30px 20px;
+            position: relative;
+        }
+
+        .luxury-card-inner {
+            background-color: var(--card-bg);
+            border: 1px solid var(--accent-color); 
+            padding: 45px 20px;
+            position: relative;
+        }
+
+        .card-title {
+            font-size: 2.1rem;
+            font-weight: 300;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        .card-details {
+            font-size: 1.1rem;
+            color: #4a433e;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .directions-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent-color);
+            margin-top: 30px;
+            padding-bottom: 3px;
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="invitation-container">
-        
-        <div id="splash-screen">
-            <div class="envelope-wrapper" id="mainEnvelope" onclick="animateAndOpen()">
-                <div class="envelope-flap"></div>
-                <div class="envelope-body"></div>
-                <div class="envelope-front-cover"></div>
-                <div class="wax-seal">M&N</div>
-            </div>
-            <p class="splash-text">OPEN ENVELOPE</p>
+    <div id="splash-screen">
+        <div class="envelope" id="mainEnvelope" onclick="openWeddingEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="wax-seal"></div>
+            <div class="envelope-front"></div>
         </div>
-
-        <div class="music-toggle" id="musicBtn" onclick="toggleMusic()" style="display: none;">🔊</div>
-        <audio id="bgMusic" loop preload="auto">
-            <source src="https://serv100.albumaty.com/2024/Albumaty.Com_hsyn_algsmy_fstank_alabyd.mp3" type="audio/mpeg">
-        </audio>
-
-        <div id="main-content">
-            
-            <section class="hero-section">
-                <div class="script-font slide-left">We're getting married!</div>
-                
-                <div class="couple-names slide-right">Mohamed<br><span class="and-script">and</span><br>Nora</div>
-                
-                <div class="rings-separator slide-left">💍</div>
-                
-                <div class="save-the-date slide-right">SAVE THE DATE</div>
-                <div class="date-time slide-right">
-                    2026 / 06 / 30<br>
-                    7:00 PM<br>
-                    DIVA HALL
-                </div>
-            </section>
-
-            <section class="countdown-section">
-                <h3 class="countdown-title slide-left">COUNTDOWN TO OUR BIG DAY</h3>
-                <div class="timer-display slide-right" id="timer">
-                    <div class="time-unit"><span id="days">00</span><span class="unit-label">days</span></div> :
-                    <div class="time-unit"><span id="hours">00</span><span class="unit-label">hours</span></div> :
-                    <div class="time-unit"><span id="minutes">00</span><span class="unit-label">minutes</span></div> :
-                    <div class="time-unit"><span id="seconds">00</span><span class="unit-label">seconds</span></div>
-                </div>
-            </section>
-
-            <section class="location-section">
-                <div class="section-header slide-left">OUR DAY</div>
-                <div class="venue-name slide-right">DIVA HALL</div>
-                <div class="slide-left">
-                    <a href="#" class="direction-link">TAP ADDRESS FOR DIRECTION</a>
-                </div>
-            </section>
-
-            <section class="rsvp-section">
-                <div class="rsvp-container slide-right">
-                    <h2 class="rsvp-header">R.S.V.P</h2>
-                    <p class="rsvp-deadline">PLEASE REPLY BY 30-06-2026</p>
-
-                    <div class="input-block">
-                        <label class="input-label">YOUR FULL NAME</label>
-                        <input type="text" class="text-input" placeholder="Enter your name">
-                    </div>
-
-                    <div class="input-block">
-                        <label class="input-label">? WILL YOU ATTEND</label>
-                        <div class="rsvp-options">
-                            <input type="radio" name="attend" id="accept" class="rsvp-radio-input">
-                            <label for="accept" class="rsvp-option-label">JOYFULLY ACCEPTS</label>
-
-                            <input type="radio" name="attend" id="decline" class="rsvp-radio-input">
-                            <label for="decline" class="rsvp-option-label">REGRETFULLY DECLINES</label>
-                        </div>
-                    </div>
-
-                    <div class="input-block">
-                        <label class="input-label">YOUR CONGRATULATION</label>
-                        <input type="text" class="text-input" placeholder="Write a message...">
-                    </div>
-
-                    <button class="submit-rsvp-btn" onclick="alert('Thank you for your reply!')">SEND REPLY</button>
-                </div>
-            </section>
-
-            <footer class="invitation-footer">
-                <div class="footer-names slide-left">Mohamed<br><span class="and-script">and</span><br>Nora</div>
-                <p class="footer-date slide-right">30 . 06 . 2026</p>
-            </footer>
-
-        </div>
+        <div class="seal-instruction">اضغط على الختم لفتح الدعوة ✨</div>
     </div>
 
+    <div class="audio-toggle" id="audioBtn" onclick="toggleAudio()" style="display: none;">🔊</div>
+
+    <div id="main-content">
+        
+        <div class="hero-video-cover">
+            <video autoplay muted loop playsinline id="heroVideo">
+                <source src="https://res.cloudinary.com/dyvadd9tt/video/upload/73B8D59D-35AF-43EE-A1B7-CE7D404EF007_dcagmq.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay-gradient"></div>
+            <div class="video-overlay-text">
+                <p style="font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px;">Welcome to Our Love Story</p>
+                <p style="font-family: 'Aref Ruqaa', serif; font-size: 1.8rem;">فصارت بالحبّ دنيانا جمِيلة</p>
+            </div>
+        </div>
+        
+        <div class="monogram animate-fade-up delay-1">M & N</div>
+        <div class="couple-names animate-fade-up delay-1"> Mohamed & Nora </div>
+        
+        <div class="countdown-section animate-fade-up delay-2">
+            <div class="countdown-subtitle">2026/06/30</div>
+            <div class="countdown-row" id="timer">
+                <div class="time-block">
+                    <span class="time-number" id="days">00</span>
+                    <span class="time-text">Days</span>
+                </div>
+                <div class="timer-dot">♦</div>
+                <div class="time-block">
+                    <span class="time-number" id="hours">00</span>
+                    <span class="time-text">Hours</span>
+                </div>
+                <div class="timer-dot">♦</div>
+                <div class="time-block">
+                    <span class="time-number" id="minutes">00</span>
+                    <span class="time-text">Minutes</span>
+                </div>
+                <div class="timer-dot">♦</div>
+                <div class="time-block">
+                    <span class="time-number" id="seconds">00</span>
+                    <span class="time-text">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="position: relative; height: 20px;">
+            <span class="floating-heart-inline" style="left: 46%;">❤️</span>
+        </div>
+
+        <h2 class="section-header animate-fade-up">Our Story</h2>
+        <div class="decorative-divider animate-fade-up">
+            <span class="diamond">♦</span>
+            <div class="line"></div>
+            <span class="diamond">♦</span>
+        </div>
+
+        <div class="story-section">
+            <div class="story-block animate-fade-up">
+                <img src="https://res.cloudinary.com/dyvadd9tt/image/upload/v1781217235/b6afb239-c726-40b7-a34a-d0c316d232f8_came0c.jpg" class="story-image" alt="Our First Meet">
+                <h3 class="story-title"></h3>
+                <p class="story-text"></p>
+            </div>
+
+            <div class="story-block animate-fade-up">
+                <img src="https://i.pinimg.com/736x/64/e4/15/64e415500ccc6cb50ce450fa23c29251.jpg" class="story-image" alt="Our Promise">
+                <h3 class="story-title"></h3>
+                <p class="story-text"></p>
+            </div>
+        </div>
+
+        <h2 class="section-header animate-fade-up">When & Where</h2>
+        <div class="decorative-divider animate-fade-up">
+            <span class="diamond">♦</span>
+            <div class="line"></div>
+            <span class="diamond">♦</span>
+        </div>
+
+        <div class="luxury-card animate-fade-up">
+            <span class="floating-heart-inline" style="top: -12px; right: 25px;">❤️</span>
+            <div class="luxury-card-inner">
+                <h3 class="card-title">City mark Resort</h3>
+                <p class="card-details" style="font-weight: 600; color: var(--accent-color); margin-bottom: 15px;">June 30, 2026</p>
+                <p class="card-details">6:00 PM</p>
+                <p class="card-details">عنوان</p>
+                <p class="card-details">طريق المنصوريه هرم بعد قاعات لامور جيزا</p>
+                <a href="https://maps.google.com" target="_blank" class="directions-link">اللوكيشن   ↗</a>
+            </div>
+            <span class="floating-heart-inline" style="bottom: -15px; left: 35px;">❤️</span>
+        </div>
+
+        <h3 class="footer-date animate-fade-up">Save The Date</h3>
+    </div>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://serv100.albumaty.com/2024/Albumaty.Com_hsyn_algsmy_fstank_alabyd.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-        // دالة فتح الظرف الكاملة المحدثة (حركة 3D)
-        function animateAndOpen() {
-            const envelope = document.getElementById('mainEnvelope');
-            const splash = document.getElementById('splash-screen');
-            const main = document.getElementById('main-content');
-            const musicBtn = document.getElementById('musicBtn');
-            const music = document.getElementById('bgMusic');
+        const music = document.getElementById('bgMusic');
+        const audioBtn = document.getElementById('audioBtn');
+        const softHearts = ['❤️', '💖'];
 
-            if (envelope.classList.contains('splash-open')) return; // لمنع النقر المزدوج
-
-            // 1. فتح الغطاء العلوي ثلاثي الأبعاد
-            envelope.classList.add('splash-open');
-            
-            // تشغيل الموسيقى
-            music.play().catch(e => console.log("Audio play prevented"));
-            document.getElementById('musicBtn').innerText = '⏸';
-
-            // 2. انزلاق الظرف بالكامل للأسفل بعد اكتمال فتح الغطاء
-            setTimeout(() => {
-                splash.style.transform = 'translateY(100vh)'; /* ينزلق خارج الشاشة للأسفل */
-                
-                // 3. كشف المحتوى الرئيسي
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    main.style.display = 'block';
-                    musicBtn.style.display = 'flex'; /* إظهار أيقونة الصوت */
-                    
-                    setTimeout(() => { 
-                        main.style.opacity = '1'; 
-                        initScrollAnimations(); /* تفعيل أنيميشن التمرير */
-                    }, 50);
-                }, 1000); /* انتظار انزلاق الظرف للأسفل */
-            }, 800); /* انتظار فتح غطاء الظرف */
-        }
-
-        function toggleMusic() {
-            const music = document.getElementById('bgMusic');
-            const btn = document.getElementById('musicBtn');
-            if (music.paused) {
-                music.play();
-                btn.innerText = '⏸';
-            } else {
-                music.pause();
-                btn.innerText = '🔊';
-            }
-        }
-
-        // تفعيل حركة الدخول من اليمين واليسار عند النزول
+        // نظام مراقبة التمرير لجعل العناصر تظهر أثناء النزول
         function initScrollAnimations() {
-            const elements = document.querySelectorAll('.slide-left, .slide-right');
+            const animatedElements = document.querySelectorAll('.animate-fade-up');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.12
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-active');
-                        observer.unobserve(entry.target); /* تفعيل الأنيميشن مرة واحدة فقط */
+                        entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.1 }); 
+            }, observerOptions);
 
-            elements.forEach(el => observer.observe(el));
+            animatedElements.forEach(el => observer.observe(el));
         }
 
-        // [التعديل 2]: العداد التنازلي مضبوط لليوم المحدد (30 يونيو 2026)
-        const targetDate = new Date("June 30, 2026 19:00:00").getTime();
+        function startFloatingHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('confetti');
+                heart.innerText = softHearts[Math.floor(Math.random() * softHearts.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 2 + 3 + 's'; 
+                heart.style.opacity = Math.random() * 0.6 + 0.4;
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 5000);
+            }, 500);
+        }
+
+        function openWeddingEnvelope() {
+            const envelope = document.getElementById('mainEnvelope');
+            const splash = document.getElementById('splash-screen');
+            const main = document.getElementById('main-content');
+            
+            envelope.classList.add('open-envelope');
+            
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.transform = 'scale(0.96) translateY(-15px)';
+                
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    main.style.display = 'block';
+                    audioBtn.style.display = 'flex';
+                    
+                    setTimeout(() => { 
+                        main.style.opacity = '1'; 
+                        initScrollAnimations();
+                        startFloatingHearts(); 
+                    }, 50);
+                }, 1000);
+            }, 800);
+
+            // تحديد توقيت الأغنية أولاً من الثانية 55 ثم تشغيلها بشكل آمن
+            music.currentTime = 55;
+            music.play().catch(e => {
+                console.log("تم تفعيل التشغيل الآمن بنجاح");
+            });
+        }
+
+        function toggleAudio() {
+            if (music.paused) {
+                music.play();
+                audioBtn.innerText = '🔊';
+            } else {
+                music.pause();
+                audioBtn.innerText = '🔇';
+            }
+        }
+
+        // حساب عداد الوقت التلقائي لليلة الفرح (30 يونيو 2026)
+        const targetDate = new Date("June 30, 2026 18:00:00").getTime();
 
         const timerInterval = setInterval(() => {
             const now = new Date().getTime();
-            const diff = targetDate - now;
+            const difference = targetDate - now;
 
-            if (diff > 0) {
-                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-            } else {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            if (difference < 0) {
                 clearInterval(timerInterval);
-                document.getElementById("timer").innerHTML = "<h3 style='font-size:1.5rem;'>JUST MARRIED!</h3>";
+                document.getElementById("timer").innerHTML = "<span style='font-size:1.1rem; color:var(--accent-color); letter-spacing:3px;'>JUST MARRIED 🎉</span>";
             }
         }, 1000);
     </script>
