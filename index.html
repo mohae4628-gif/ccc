@@ -42,13 +42,112 @@
 
         /* --- 1. شاشة الظرف الثلاثية الأبعاد الواقعية (3D Envelope) --- */
         #splash-screen {
-            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #fcf9f5; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); /* ينزلق خارج الشاشة */
+            perspective: 1000px; /* ضروري لتأثير الـ 3D */
+        }
+
+        /* حاوية الظرف الرئيسية لضبط المنظور */
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 220px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .envelope-wrapper:hover {
+            transform: rotateX(5deg) scale(1.02); /* تأثير إمالة خفيف عند التمرير */
+        }
+
+        /* غطاء الظرف العلوي (يفتح بروتينX 180 درجة) */
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0; width: 0; height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--dark-chocolate);
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 4; /* على قمة الغطاء الجانبي */
+            backface-visibility: hidden; /* ضروري لعدم ظهور الظهر عند الفتح */
+        }
+
+        /* جسم الظرف (الجوانب والأسفل) */
+        .envelope-body {
+            position: absolute;
+            bottom: 0; left: 0; width: 0; height: 0;
+            border-left: 150px solid rgba(74, 33, 13, 1);
+            border-right: 150px solid rgba(74, 33, 13, 1);
+            border-bottom: 110px solid #5d2b12; /* أفتح قليلاً لإضافة عمق */
+            z-index: 2; /* خلف غطاء الظرف الجانبي والأمامي */
+            border-radius: 0 0 8px 8px;
+        }
+        /* غطاء جانبي أمامي لتغطية الحواف */
+        .envelope-front-cover {
+             position: absolute;
+             bottom:0; left:0; width: 100%; height: 110px;
+             background-color: var(--envelope-body);
+             z-index: 3;
+             border-radius: 0 0 8px 8px;
+             backface-visibility: hidden;
+        }
+
+        /* الختم الشمعي ثلاثي الأبعاد المطور (A&F -> M&N) */
+        .wax-seal {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #d4af37, #a67c52);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.6rem;
+            font-family: 'Alex Brush', cursive;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5);
+            transition: opacity 0.5s ease 0.4s, transform 0.5s ease;
+        }
+
+        /* حالات فتح الـ 3D (الجديدة) */
+        .splash-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* ينزل خلف المحتوى */
+        }
+        .splash-open .wax-seal {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px) scale(0.8); /* يختفي لأسفل */
+        }
+
+        .splash-text {
+            margin-top: 40px;
+            font-size: 1.1rem;
+            letter-spacing: 4px;
+            color: var(--dark-chocolate);
+            animation: pulse 2s infinite;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
         }
 
         /* --- 2. المحتوى الرئيسي بالخلفية الموحدة الجديدة --- */
         #main-content {
-            display: block;
-            opacity: 1;
+            display: none;
+            opacity: 0;
             transition: opacity 2s ease;
             width: 100%;
             min-height: 100vh;
@@ -213,42 +312,116 @@
             margin-bottom: 15px;
             font-family: 'Cormorant Garamond', serif;
         }
-        /* خريطة جوجل المدمجة */
-        .map-container {
-            width: 100%;
-            height: 350px;
-            margin: 30px 0;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* زر الاتجاهات المحدّث */
         .direction-link {
             display: inline-block;
-            margin-top: 25px;
-            padding: 15px 40px;
+            margin: 20px 0;
             font-size: 1rem;
             letter-spacing: 2px;
-            color: white;
-            background-color: var(--dark-chocolate);
-            border: none;
-            border-radius: 5px;
+            color: var(--dark-chocolate);
+            text-decoration: underline;
+            text-underline-offset: 5px;
             text-transform: uppercase;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
         }
-        .direction-link:hover {
-            background-color: var(--gold-accent);
+
+        /* قسم RSVP التفاعلي (زجاجي) */
+        .rsvp-section {
+            padding: 50px 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .rsvp-container {
+            /* تأثير زجاجي ليظهر ما خلفه بشكل ضبابي جميل */
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 40px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .rsvp-header {
             color: var(--dark-chocolate);
-            transform: scale(1.05);
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .rsvp-deadline {
+            color: var(--dark-chocolate);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .input-block {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .input-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--dark-chocolate);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1.1rem;
+        }
+
+        .rsvp-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .rsvp-option-label {
+            position: relative;
+            display: block;
+            padding: 12px;
+            border: 1px solid var(--dark-chocolate);
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1rem;
+            background-color: rgba(255,255,255,0.7);
+            color: var(--dark-chocolate);
+            font-weight: 600;
+            transition: all 0.3s;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .rsvp-radio-input { display: none; }
+        .rsvp-radio-input:checked + .rsvp-option-label {
+            color: white;
+            border-color: var(--dark-chocolate);
+        }
+        .rsvp-option-label::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; height: 100%; width: 0;
+            background-color: var(--dark-chocolate);
+            z-index: -1;
+            transition: width 0.4s ease-out;
+        }
+        .rsvp-radio-input:checked + .rsvp-option-label::before { width: 100%; }
+
+        .submit-rsvp-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--dark-chocolate);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
         }
 
         /* الفوتر الداكن */
@@ -278,10 +451,9 @@
         
         <div id="splash-screen">
             <div class="envelope-wrapper" id="mainEnvelope" onclick="animateAndOpen()">
+                <div class="envelope-flap"></div>
                 <div class="envelope-body"></div>
-                <div class="envelope-flap-left"></div>
-                <div class="envelope-flap-right"></div>
-                <div class="envelope-front"></div>
+                <div class="envelope-front-cover"></div>
                 <div class="wax-seal">M&N</div>
             </div>
             <p class="splash-text">OPEN ENVELOPE</p>
@@ -298,12 +470,14 @@
                 <div class="script-font slide-left">We're getting married!</div>
                 
                 <div class="couple-names slide-right">Mohamed<br><span class="and-script">and</span><br>Nora</div>
-                                
+                
+                <div class="rings-separator slide-left">💍</div>
+                
                 <div class="save-the-date slide-right">SAVE THE DATE</div>
                 <div class="date-time slide-right">
                     2026 / 06 / 30<br>
                     7:00 PM<br>
-                    City Mark Resort
+                    DIVA HALL
                 </div>
             </section>
 
@@ -319,15 +493,39 @@
 
             <section class="location-section">
                 <div class="section-header slide-left">OUR DAY</div>
-                <div class="venue-name slide-right">City Mark Resort</div>
-                
-                <!-- خريطة جوجل المدمجة -->
-                <div class="map-container slide-left">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3457.3685477776746!2d31.119240411428572!3d30.006089600000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145845003f8a29a3:0x589a97b5bd27e17c!2sCity%20Mark%20Resort!5e0!3m2!1sen!2seg!4v1718037696270" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-
+                <div class="venue-name slide-right">DIVA HALL</div>
                 <div class="slide-left">
-                    <a href="https://www.google.com/maps/place/City+Mark+Resort/@30.0060896,31.1166655,17z/data=!3m1!4b1!4m6!3m5!1s0x145845003f8a29a3:0x589a97b5bd27e17c!8m2!3d30.0060896!4d31.1192404!16s%2Fg%2F11vyspr8pp?entry=ttu&g_ep=EgoyMDI2MDYwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="direction-link">OPEN IN GOOGLE MAPS</a>
+                    <a href="#" class="direction-link">TAP ADDRESS FOR DIRECTION</a>
+                </div>
+            </section>
+
+            <section class="rsvp-section">
+                <div class="rsvp-container slide-right">
+                    <h2 class="rsvp-header">R.S.V.P</h2>
+                    <p class="rsvp-deadline">PLEASE REPLY BY 30-06-2026</p>
+
+                    <div class="input-block">
+                        <label class="input-label">YOUR FULL NAME</label>
+                        <input type="text" class="text-input" placeholder="Enter your name">
+                    </div>
+
+                    <div class="input-block">
+                        <label class="input-label">? WILL YOU ATTEND</label>
+                        <div class="rsvp-options">
+                            <input type="radio" name="attend" id="accept" class="rsvp-radio-input">
+                            <label for="accept" class="rsvp-option-label">JOYFULLY ACCEPTS</label>
+
+                            <input type="radio" name="attend" id="decline" class="rsvp-radio-input">
+                            <label for="decline" class="rsvp-option-label">REGRETFULLY DECLINES</label>
+                        </div>
+                    </div>
+
+                    <div class="input-block">
+                        <label class="input-label">YOUR CONGRATULATION</label>
+                        <input type="text" class="text-input" placeholder="Write a message...">
+                    </div>
+
+                    <button class="submit-rsvp-btn" onclick="alert('Thank you for your reply!')">SEND REPLY</button>
                 </div>
             </section>
 
@@ -419,20 +617,6 @@
                 document.getElementById("timer").innerHTML = "<h3 style='font-size:1.5rem;'>JUST MARRIED!</h3>";
             }
         }, 1000);
-
-        // تشغيل الموسيقى والـ animations مباشرة عند التحميل
-        window.addEventListener('load', () => {
-            const music = document.getElementById('bgMusic');
-            const musicBtn = document.getElementById('musicBtn');
-            
-            // تشغيل الموسيقى
-            music.play().catch(e => console.log("Audio play prevented"));
-            musicBtn.innerText = '⏸';
-            musicBtn.style.display = 'flex';
-            
-            // تفعيل الـ animations مباشرة
-            initScrollAnimations();
-        });
     </script>
 </body>
 </html>
