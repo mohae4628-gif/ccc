@@ -117,12 +117,15 @@
 
         .search-container {
             position: relative;
-            max-width: 300px;
+            max-width: 360px;
             width: 100%;
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
         .search-input {
-            width: 100%;
+            flex: 1;
             background-color: #0f1116;
             border: 1px solid var(--border-color);
             color: var(--text-color);
@@ -136,6 +139,22 @@
         .search-input:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
+        }
+
+        .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
         }
 
         .page {
@@ -441,6 +460,12 @@
             grid-column: 1 / -1;
         }
 
+        .search-summary {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
         .watch-container {
             display: grid;
             grid-template-columns: 3fr 1fr;
@@ -632,7 +657,8 @@
             </nav>
         </div>
         <div class="search-container">
-            <input type="text" id="search-bar" class="search-input" placeholder="ابحث عن مسلسل أو فيلم..." onkeyup="liveSearch()">
+            <input type="text" id="search-bar" class="search-input" placeholder="ابحث عن مسلسل أو فيلم..." onkeyup="handleSearchInput(event)">
+            <button class="search-btn" onclick="goToSearchPage()">بحث</button>
         </div>
     </header>
 
@@ -725,6 +751,14 @@
         </div>
         <div class="grid-container" id="movies-grid">
             <div class="no-results" id="no-results-movies">عذراً، لم نجد أي فيلم بهذا الاسم!</div>
+        </div>
+    </div>
+
+    <div id="search-page" class="page">
+        <div class="section-header"><h2 class="section-title">نتائج البحث</h2></div>
+        <div class="search-summary" id="search-summary">اكتب كلمة للبدء ثم اضغط على بحث.</div>
+        <div class="grid-container" id="search-results-grid">
+            <div class="no-results" id="no-results-search">لم نجد أي نتائج لهذا البحث.</div>
         </div>
     </div>
 
@@ -823,6 +857,20 @@
         let currentItem = null;
         let currentEpisodeNum = "1";
 
+        function buildCardHTML(item) {
+            return `
+                <div class="media-card" data-type="${item.type}" onclick="openMedia('${item.id}')">
+                    <div class="card-img-holder">
+                        <span class="card-badge">${item.badge}</span>
+                        <img src="${item.img}" alt="${item.title}">
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title">${item.title}</h3>
+                        <div class="card-meta">${item.meta}</div>
+                    </div>
+                </div>`;
+        }
+
         function renderGrids() {
             const homeGrid = document.getElementById('home-grid');
             const seriesGrid = document.getElementById('series-only-grid');
@@ -831,17 +879,7 @@
             const recommendationRow = document.getElementById('recommendation-row');
 
             siteData.forEach(item => {
-                const cardHTML = `
-                    <div class="media-card" data-type="${item.type}" onclick="openMedia('${item.id}')">
-                        <div class="card-img-holder">
-                            <span class="card-badge">${item.badge}</span>
-                            <img src="${item.img}" alt="${item.title}">
-                        </div>
-                        <div class="card-info">
-                            <h3 class="card-title">${item.title}</h3>
-                            <div class="card-meta">${item.meta}</div>
-                        </div>
-                    </div>`;
+                const cardHTML = buildCardHTML(item);
                 
                 if(homeGrid) homeGrid.insertAdjacentHTML('beforeend', cardHTML);
                 if (item.type === 'series' && seriesGrid) seriesGrid.insertAdjacentHTML('beforeend', cardHTML);
@@ -934,12 +972,17 @@
             btnElement.classList.add('active');
         }
 
-        function filterPage(pageId, filterType) {
-            const page = document.getElementById(pageId);
+        function applyPageState(pageId = null, filterType = null, query = null) {
+            const targetPageId = pageId || document.querySelector('.page.active-page')?.id;
+            const page = targetPageId ? document.getElementById(targetPageId) : null;
             if (!page) return;
 
+            const searchInput = document.getElementById('search-bar');
+            const searchQuery = (query ?? searchInput?.value ?? '').toLowerCase().trim();
+            const activeFilter = filterType || page.querySelector('.filter-chip.active')?.dataset.filter || 'all';
+
             page.querySelectorAll('.filter-chip').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filterType);
+                btn.classList.toggle('active', btn.dataset.filter === activeFilter);
             });
 
             const cards = page.querySelectorAll('.media-card');
@@ -947,45 +990,70 @@
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const matchesFilter = filterType === 'all' || card.dataset.type === filterType;
-                card.style.display = matchesFilter ? 'block' : 'none';
-                if (matchesFilter) visibleCount++;
-            });
-
-            if (noResultsMessage) {
-                noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
-        }
-
-        function liveSearch() {
-            const query = document.getElementById('search-bar').value.toLowerCase();
-            const activePage = document.querySelector('.page.active-page');
-            if (!activePage || activePage.id === 'watch-page') return;
-
-            const cards = activePage.querySelectorAll('.media-card');
-            const noResultsMessage = activePage.querySelector('.no-results');
-            let foundCount = 0;
-            const activeFilter = activePage.querySelector('.filter-chip.active')?.dataset.filter || 'all';
-
-            cards.forEach(card => {
                 const title = card.querySelector('.card-title').innerText.toLowerCase();
                 const matchesFilter = activeFilter === 'all' || card.dataset.type === activeFilter;
-                const matchesQuery = title.includes(query);
+                const matchesQuery = searchQuery === '' || title.includes(searchQuery);
                 const shouldShow = matchesFilter && matchesQuery;
 
                 card.style.display = shouldShow ? 'block' : 'none';
-                if (shouldShow) foundCount++;
+                if (shouldShow) visibleCount++;
             });
 
-            if (foundCount === 0 && query !== "") {
-                if(noResultsMessage) noResultsMessage.style.display = 'block';
-            } else {
-                if(noResultsMessage) noResultsMessage.style.display = 'none';
+            if (noResultsMessage) {
+                const shouldShowMessage = visibleCount === 0 && (searchQuery !== '' || activeFilter !== 'all');
+                noResultsMessage.style.display = shouldShowMessage ? 'block' : 'none';
             }
         }
 
+        function renderSearchResults() {
+            const searchGrid = document.getElementById('search-results-grid');
+            const summary = document.getElementById('search-summary');
+            const searchInput = document.getElementById('search-bar');
+            if (!searchGrid || !summary || !searchInput) return;
+
+            const query = searchInput.value.trim().toLowerCase();
+            searchGrid.innerHTML = '';
+
+            if (!query) {
+                summary.innerText = 'اكتب كلمة للبدء ثم اضغط على بحث.';
+                searchGrid.insertAdjacentHTML('beforeend', '<div class="no-results" style="display:block;">اكتب كلمة للبدء ثم اضغط على بحث.</div>');
+                return;
+            }
+
+            const results = siteData.filter(item => item.title.toLowerCase().includes(query));
+            const queryText = searchInput.value.trim();
+            summary.innerHTML = results.length > 0
+                ? `تم العثور على <strong>${results.length}</strong> نتيجة لـ "${queryText}"`
+                : `لم نجد أي نتائج لـ "${queryText}"`;
+
+            if (results.length > 0) {
+                results.forEach(item => {
+                    searchGrid.insertAdjacentHTML('beforeend', buildCardHTML(item));
+                });
+            } else {
+                searchGrid.insertAdjacentHTML('beforeend', '<div class="no-results" style="display:block;">لم نجد أي نتائج لهذا البحث.</div>');
+            }
+        }
+
+        function goToSearchPage() {
+            const searchInput = document.getElementById('search-bar');
+            if (!searchInput) return;
+            renderSearchResults();
+            showPage('search-page');
+        }
+
+        function handleSearchInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                goToSearchPage();
+            }
+        }
+
+        function filterPage(pageId, filterType) {
+            applyPageState(pageId, filterType);
+        }
+
         function showPage(pageId) {
-            document.getElementById('search-bar').value = "";
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
             
@@ -994,10 +1062,12 @@
             if(pageId === 'series-page') document.getElementById('nav-series').classList.add('active');
             if(pageId === 'movies-page') document.getElementById('nav-movies').classList.add('active');
 
-            if (pageId !== 'watch-page') {
+            if (pageId === 'search-page') {
+                renderSearchResults();
+            } else if (pageId !== 'watch-page') {
                 const activeFilterButton = document.querySelector(`#${pageId} .filter-chip.active`);
                 const activeFilter = activeFilterButton ? activeFilterButton.dataset.filter : 'all';
-                filterPage(pageId, activeFilter);
+                applyPageState(pageId, activeFilter, document.getElementById('search-bar').value);
             }
         }
 
