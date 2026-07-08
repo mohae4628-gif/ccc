@@ -25,10 +25,15 @@
             font-family: 'Cairo', sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             padding-bottom: 60px;
+            overflow-x: hidden;
         }
 
         header {
@@ -75,6 +80,39 @@
 
         .nav-links a:hover, .nav-links a.active {
             color: var(--primary-color);
+        }
+
+        .top-trending {
+            margin: 24px 0 18px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            background: linear-gradient(90deg, rgba(229, 9, 20, 0.2), rgba(255,255,255,0.04));
+            border: 1px solid rgba(229, 9, 20, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+        }
+
+        .trending-label {
+            font-weight: 700;
+            color: #ffd2d6;
+        }
+
+        .trending-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .trending-tags span {
+            background: rgba(255,255,255,0.08);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            color: var(--text-color);
         }
 
         .search-container {
@@ -132,6 +170,165 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
+        .hero-content {
+            max-width: 680px;
+        }
+
+        .hero-pill {
+            display: inline-block;
+            background: rgba(229, 9, 20, 0.2);
+            color: #ffd2d6;
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .hero-btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            backdrop-filter: blur(6px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            color: var(--text-muted);
+        }
+
+        .hero-stats div {
+            background: rgba(10, 12, 16, 0.65);
+            padding: 10px 14px;
+            border-radius: 8px;
+            min-width: 110px;
+        }
+
+        .hero-stats strong {
+            display: block;
+            color: white;
+            font-size: 16px;
+        }
+
+        .quick-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0 32px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+        }
+
+        .feature-card:hover {
+            border-color: rgba(229, 9, 20, 0.35);
+            box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.14) inset, 0 14px 30px rgba(229, 9, 20, 0.12);
+            animation: pulseGlow 0.4s ease;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .feature-text {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .trending-section {
+            margin: 0 0 36px;
+        }
+
+        .trending-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .trending-item {
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.16), rgba(255,255,255,0.04));
+            border: 1px solid rgba(229, 9, 20, 0.25);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .trending-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px rgba(229, 9, 20, 0.16);
+            animation: pulseGlow 0.4s ease;
+        }
+
+        .trending-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #ffd2d6;
+            margin-bottom: 10px;
+        }
+
+        .trending-item h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .trending-item p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .trending-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -139,6 +336,30 @@
             margin-bottom: 20px;
             border-right: 4px solid var(--primary-color);
             padding-right: 15px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .filter-chip {
+            background: #0f1116;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+        }
+
+        .filter-chip:hover, .filter-chip.active {
+            color: white;
+            border-color: var(--primary-color);
+            background: rgba(229, 9, 20, 0.14);
         }
 
         .section-title {
@@ -304,6 +525,57 @@
             background-color: var(--primary-color);
         }
 
+        .recommendation-section {
+            margin: 20px 0 36px;
+        }
+
+        .recommendation-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .recommend-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+        }
+
+        .recommend-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .recommend-card .content {
+            padding: 14px;
+        }
+
+        .recommend-card h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .recommend-card p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .recommend-card button {
+            background: rgba(229, 9, 20, 0.9);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -311,6 +583,25 @@
             font-size: 14px;
             border-top: 1px solid var(--border-color);
             margin-top: 50px;
+        }
+
+        .developer-credit {
+            display: inline-block;
+            margin-top: 10px;
+            color: #ffd2d6;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .developer-credit a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+            100% { transform: translateY(0); }
         }
 
         @media (max-width: 992px) {
@@ -345,38 +636,98 @@
         </div>
     </header>
 
-    <!-- الرئيسية -->
     <div id="home-page" class="page active-page">
         <div class="hero-banner">
-            <h1 class="hero-title">طائر الرفراف - الموسم الجديد يدق الأبواب</h1>
-            <p style="color: var(--text-muted);">تابعوا الحلقات الحصرية والمترجمة فور صدورها بجودة خارقة.</p>
+            <div class="hero-content">
+                <div class="hero-pill">موقع حصري جديد • تحديثات يومية</div>
+                <h1 class="hero-title">طائر الرفراف - الموسم الجديد يدق الأبواب</h1>
+                <p style="color: var(--text-muted);">تابعوا الحلقات الحصرية والمترجمة فور صدورها بجودة خارقة مع واجهة سهلة وسريعة.</p>
+                <div class="hero-actions">
+                    <button class="hero-btn hero-btn-primary" onclick="showPage('series-page')">استكشف المسلسلات</button>
+                    <button class="hero-btn hero-btn-secondary" onclick="showPage('movies-page')">شاهد الأفلام</button>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>+20</strong><span>عمل جديد</span></div>
+                    <div><strong>4K</strong><span>جودة عالية</span></div>
+                    <div><strong>24/7</strong><span>محتوى مستمر</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="top-trending">
+            <div class="trending-label">Trending الآن</div>
+            <div class="trending-tags">
+                <span>الأكثر مشاهدة</span>
+                <span>مسلسلات تركية</span>
+                <span>أفلام مترجمة</span>
+                <span>جودة عالية</span>
+            </div>
+        </div>
+
+        <div class="quick-features">
+            <div class="feature-card">
+                <div class="feature-title">محتوى مميز</div>
+                <div class="feature-text">أفضل المسلسلات والأفلام التركية المترجمة مع تصنيفات واضحة وسريعة الوصول.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-title">تجربة سلسة</div>
+                <div class="feature-text">واجهة حديثة ومريحة للهواتف والأجهزة المختلفة مع بحث سريع داخل المحتوى.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-title">تحديث مستمر</div>
+                <div class="feature-text">نضيف أعمال جديدة باستمرار لتبقى دائمًا على اطلاع بأحدث العروض التركية.</div>
+            </div>
+        </div>
+
+        <div class="trending-section">
+            <div class="section-header">
+                <h2 class="section-title">الأكثر مشاهدة</h2>
+            </div>
+            <div class="trending-list" id="trending-list"></div>
+        </div>
+
+        <div class="recommendation-section">
+            <div class="section-header">
+                <h2 class="section-title">مقترحات لك</h2>
+            </div>
+            <div class="recommendation-row" id="recommendation-row"></div>
         </div>
 
         <div class="section-header">
             <h2 class="section-title">أحدث الإضافات الحصرية للموقع</h2>
+        </div>
+        <div class="filter-bar">
+            <button class="filter-chip active" data-filter="all" onclick="filterPage('home-page', 'all')">الكل</button>
+            <button class="filter-chip" data-filter="series" onclick="filterPage('home-page', 'series')">مسلسلات</button>
+            <button class="filter-chip" data-filter="movie" onclick="filterPage('home-page', 'movie')">أفلام</button>
         </div>
         <div class="grid-container" id="home-grid">
             <div class="no-results" id="no-results-home">عذراً، لم نجد أي عمل بهذا الاسم!</div>
         </div>
     </div>
 
-    <!-- قسم المسلسلات -->
     <div id="series-page" class="page">
         <div class="section-header"><h2 class="section-title">جميع المسلسلات التركية المتاحة</h2></div>
+        <div class="filter-bar">
+            <button class="filter-chip active" data-filter="all" onclick="filterPage('series-page', 'all')">الكل</button>
+            <button class="filter-chip" data-filter="series" onclick="filterPage('series-page', 'series')">المسلسلات</button>
+        </div>
         <div class="grid-container" id="series-only-grid">
              <div class="no-results" id="no-results-series">عذراً، لم نجد أي مسلسل بهذا الاسم!</div>
         </div>
     </div>
 
-    <!-- قسم الأفلام -->
     <div id="movies-page" class="page">
         <div class="section-header"><h2 class="section-title">الأفلام التركية المترجمة</h2></div>
+        <div class="filter-bar">
+            <button class="filter-chip active" data-filter="all" onclick="filterPage('movies-page', 'all')">الكل</button>
+            <button class="filter-chip" data-filter="movie" onclick="filterPage('movies-page', 'movie')">الأفلام</button>
+        </div>
         <div class="grid-container" id="movies-grid">
             <div class="no-results" id="no-results-movies">عذراً، لم نجد أي فيلم بهذا الاسم!</div>
         </div>
     </div>
 
-    <!-- صفحة المشاهدة والمشغل -->
     <div id="watch-page" class="page">
         <div style="margin-bottom: 20px;">
             <h1 id="watch-title" style="font-size: 26px; margin-bottom: 5px;">اسم العمل</h1>
@@ -398,10 +749,13 @@
         </div>
     </div>
 
-    <footer><p>حقوق النشر والترجمة محفوظة لـ سينما تركي © 2026</p></footer>
+    <footer>
+        <p>حقوق النشر والترجمة محفوظة لـ سينما تركي © 2026</p>
+        <div class="developer-credit">تم التطوير بواسطة <a href="https://esslam.dev" target="_blank" rel="noopener noreferrer">esslam.dev</a></div>
+    </footer>
 
     <script>
-        // قاعدة البيانات وبها روابط الـ Embed الحقيقية الخاصة بك
+        // دمج قاعدة البيانات هنا مباشرة لتعمل محلياً بدون مشاكل CORS
         const siteData = [
           {
             "id": "refraf",
@@ -411,16 +765,9 @@
             "type": "series",
             "img": "https://images.unsplash.com/photo-1616530940355-351facd95f9b?q=80&w=400",
             "episodes": {
-              "1": { 
-                "سيرفر DoodStream": "https://playmogo.com/e/djzjtpjhdcem", 
-                "سيرفر UpStream": "https://upstream.to/embed-w54wub6p8cbr.html" 
-              },
-              "2": { 
-                "سيرفر DoodStream": "https://playmogo.com/e/djzjtpjhdcem" 
-              },
-              "3": { 
-                "سيرفر DoodStream": "https://playmogo.com/e/djzjtpjhdcem" 
-              }
+              "1": { "DoodStream": "https://dood.to/e/placeholder_refraf_ep1", "UpStream": "https://upstream.to/embed-refraf_ep1.html" },
+              "2": { "DoodStream": "https://dood.to/e/placeholder_refraf_ep2", "UpStream": "https://upstream.to/embed-refraf_ep2.html" },
+              "3": { "DoodStream": "https://dood.to/e/placeholder_refraf_ep3", "UpStream": "https://upstream.to/embed-refraf_ep3.html" }
             }
           },
           {
@@ -431,7 +778,19 @@
             "type": "series",
             "img": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=400",
             "episodes": {
-              "1": { "DoodStream": "https://playmogo.com/e/djzjtpjhdcem" }
+              "1": { "DoodStream": "https://dood.to/e/placeholder_motawahish_ep1" },
+              "2": { "DoodStream": "https://dood.to/e/placeholder_motawahish_ep2" }
+            }
+          },
+          {
+            "id": "othman",
+            "title": "مسلسل المؤسس عثمان",
+            "meta": "الموسم 6 • تاريخي ملحمي",
+            "badge": "الحلقة 165",
+            "type": "series",
+            "img": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400",
+            "episodes": {
+              "1": { "DoodStream": "https://dood.to/e/othman_1" }
             }
           },
           {
@@ -442,7 +801,19 @@
             "type": "movie",
             "img": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=400",
             "video_links": {
-              "DoodStream": "https://playmogo.com/e/djzjtpjhdcem"
+              "DoodStream": "https://dood.to/e/placeholder_movie1",
+              "UpStream": "https://upstream.to/embed-movie1.html"
+            }
+          },
+          {
+            "id": "bullet",
+            "title": "فيلم رصاصة رحمة",
+            "meta": "فيلم كامل - 2025",
+            "badge": "FHD",
+            "type": "movie",
+            "img": "https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=400",
+            "video_links": {
+              "DoodStream": "https://dood.to/e/placeholder_movie2"
             }
           }
         ];
@@ -454,10 +825,12 @@
             const homeGrid = document.getElementById('home-grid');
             const seriesGrid = document.getElementById('series-only-grid');
             const moviesGrid = document.getElementById('movies-grid');
+            const trendingList = document.getElementById('trending-list');
+            const recommendationRow = document.getElementById('recommendation-row');
 
             siteData.forEach(item => {
                 const cardHTML = `
-                    <div class="media-card" onclick="openMedia('${item.id}')">
+                    <div class="media-card" data-type="${item.type}" onclick="openMedia('${item.id}')">
                         <div class="card-img-holder">
                             <span class="card-badge">${item.badge}</span>
                             <img src="${item.img}" alt="${item.title}">
@@ -472,6 +845,34 @@
                 if (item.type === 'series' && seriesGrid) seriesGrid.insertAdjacentHTML('beforeend', cardHTML);
                 if (item.type === 'movie' && moviesGrid) moviesGrid.insertAdjacentHTML('beforeend', cardHTML);
             });
+
+            if (trendingList) {
+                const trendingItems = siteData.filter(item => ['refraf', 'othman', 'love-tactics'].includes(item.id));
+                trendingItems.forEach(item => {
+                    trendingList.insertAdjacentHTML('beforeend', `
+                        <div class="trending-item">
+                            <div class="trending-badge">الأكثر مشاهدة</div>
+                            <h3>${item.title}</h3>
+                            <p>${item.meta}</p>
+                            <button class="trending-btn" onclick="openMedia('${item.id}')">شاهد الآن</button>
+                        </div>`);
+                });
+            }
+
+            if (recommendationRow) {
+                const recommended = siteData.slice().reverse().slice(0, 3);
+                recommended.forEach(item => {
+                    recommendationRow.insertAdjacentHTML('beforeend', `
+                        <div class="recommend-card">
+                            <img src="${item.img}" alt="${item.title}">
+                            <div class="content">
+                                <h3>${item.title}</h3>
+                                <p>${item.meta}</p>
+                                <button onclick="openMedia('${item.id}')">افتح الآن</button>
+                            </div>
+                        </div>`);
+                });
+            }
         }
 
         function openMedia(id) {
@@ -531,6 +932,29 @@
             btnElement.classList.add('active');
         }
 
+        function filterPage(pageId, filterType) {
+            const page = document.getElementById(pageId);
+            if (!page) return;
+
+            page.querySelectorAll('.filter-chip').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filterType);
+            });
+
+            const cards = page.querySelectorAll('.media-card');
+            const noResultsMessage = page.querySelector('.no-results');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const matchesFilter = filterType === 'all' || card.dataset.type === filterType;
+                card.style.display = matchesFilter ? 'block' : 'none';
+                if (matchesFilter) visibleCount++;
+            });
+
+            if (noResultsMessage) {
+                noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
         function liveSearch() {
             const query = document.getElementById('search-bar').value.toLowerCase();
             const activePage = document.querySelector('.page.active-page');
@@ -539,15 +963,16 @@
             const cards = activePage.querySelectorAll('.media-card');
             const noResultsMessage = activePage.querySelector('.no-results');
             let foundCount = 0;
+            const activeFilter = activePage.querySelector('.filter-chip.active')?.dataset.filter || 'all';
 
             cards.forEach(card => {
                 const title = card.querySelector('.card-title').innerText.toLowerCase();
-                if (title.includes(query)) {
-                    card.style.display = 'block';
-                    foundCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+                const matchesFilter = activeFilter === 'all' || card.dataset.type === activeFilter;
+                const matchesQuery = title.includes(query);
+                const shouldShow = matchesFilter && matchesQuery;
+
+                card.style.display = shouldShow ? 'block' : 'none';
+                if (shouldShow) foundCount++;
             });
 
             if (foundCount === 0 && query !== "") {
@@ -561,16 +986,24 @@
             document.getElementById('search-bar').value = "";
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
-            document.querySelectorAll('.media-card').forEach(c => c.style.display = 'block');
-            document.querySelectorAll('.no-results').forEach(m => m.style.display = 'none');
             
             document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
             if(pageId === 'home-page') document.getElementById('nav-home').classList.add('active');
             if(pageId === 'series-page') document.getElementById('nav-series').classList.add('active');
             if(pageId === 'movies-page') document.getElementById('nav-movies').classList.add('active');
+
+            if (pageId !== 'watch-page') {
+                const activeFilterButton = document.querySelector(`#${pageId} .filter-chip.active`);
+                const activeFilter = activeFilterButton ? activeFilterButton.dataset.filter : 'all';
+                filterPage(pageId, activeFilter);
+            }
         }
 
-        window.onload = renderGrids;
+        // تشغيل البناء فور فتح الصفحة لقراءة الـ Array
+        window.onload = () => {
+            renderGrids();
+            filterPage('home-page', 'all');
+        };
     </script>
 </body>
 </html>
